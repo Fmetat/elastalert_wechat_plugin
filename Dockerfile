@@ -27,7 +27,8 @@ RUN apt-get update && apt-get upgrade -y && \
     pip install "elasticsearch>=5.0.0" && \
     apt-get clean
     
-RUN pip install -r requirements-dev.txt
+RUN pip install -r requirements-dev.txt && \
+    python setup.py install
 
 ADD ./run.sh ./            
       
