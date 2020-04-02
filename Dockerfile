@@ -22,17 +22,13 @@ RUN apt-get update && apt-get upgrade -y && \
     mkdir -p ${RULES_DIRECTORY} && \
     curl -Lo elastalert.tar.gz ${ELASTALERT_URL} && \
     tar -zxvf elastalert.tar.gz -C ${ELASTALERT_HOME} --strip-components 1 && \
-    rm -rf elastalert.tar.gz && \
-    pip install -r requirements-dev.txt
+    rm -rf elastalert.tar.gz
+    
+RUN pip install -r requirements-dev.txt
 
-RUN echo "#!/bin/bash" >> /opt/elastalert/run.sh && \
-    echo "elastalert-create-index --no-ssl --no-verify-certs --config /opt/elastalert/config/config.yaml" >> run.sh && \
-    echo "elastalert --config /opt/elastalert/config/config.yaml" >> run.sh && \
-    chmod +x /opt/elastalert/run.sh
-            
+ADD ./run.sh ./            
       
 COPY ./elastalert_modules/* ${ELASTALERT_PLUGIN_DIRECTORY}/
-
 
 # Launch Elastalert when a container is started.
 CMD ["/bin/bash","run.sh"]
