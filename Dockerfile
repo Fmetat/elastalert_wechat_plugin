@@ -13,8 +13,8 @@ ENV ELASTALERT_PLUGIN_DIRECTORY /opt/elastalert/elastalert_modules
 WORKDIR ${ELASTALERT_HOME}
 
 RUN apt-get update && apt-get upgrade -y && \
-    apt-get -y install build-essential python-setuptools python2.7 python2.7-dev libssl-dev git tox python-pip && \
-	ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    apt-get -y install curl build-essential python-setuptools python2.7 python2.7-dev libssl-dev git tox python-pip && \
+    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo "Asia/Shanghai" > /etc/timezone && \
     rm -rf /var/cache/apk/* && \
     mkdir -p ${ELASTALERT_PLUGIN_DIRECTORY} && \
@@ -25,7 +25,7 @@ RUN apt-get update && apt-get upgrade -y && \
     rm -rf elastalert.tar.gz && \
     pip install -r requirements-dev.txt
 
-RUN echo "#!/bin/sh" >> /opt/elastalert/run.sh && \
+RUN echo "#!/bin/bash" >> /opt/elastalert/run.sh && \
     echo "elastalert-create-index --no-ssl --no-verify-certs --config /opt/elastalert/config/config.yaml" >> run.sh && \
     echo "elastalert --config /opt/elastalert/config/config.yaml" >> run.sh && \
     chmod +x /opt/elastalert/run.sh
@@ -35,4 +35,4 @@ COPY ./elastalert_modules/* ${ELASTALERT_PLUGIN_DIRECTORY}/
 
 
 # Launch Elastalert when a container is started.
-CMD ["/bin/sh","run.sh"]
+CMD ["/bin/bash","run.sh"]
