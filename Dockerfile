@@ -22,7 +22,9 @@ RUN apt-get update && apt-get upgrade -y && \
     mkdir -p ${RULES_DIRECTORY} && \
     curl -Lo elastalert.tar.gz ${ELASTALERT_URL} && \
     tar -zxvf elastalert.tar.gz -C ${ELASTALERT_HOME} --strip-components 1 && \
-    rm -rf elastalert.tar.gz
+    rm -rf elastalert.tar.gz && \
+    pip install "setuptools>=11.3" && \
+    pip install "elasticsearch>=5.0.0"
     
 RUN pip install -r requirements-dev.txt
 
