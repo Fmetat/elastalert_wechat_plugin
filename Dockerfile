@@ -13,23 +13,26 @@ ENV RULES_DIRECTORY /opt/elastalert/es_rules
 ENV ELASTALERT_PLUGIN_DIRECTORY /opt/elastalert/elastalert_modules
 
 #Elasticsearch 工作目录
-WORKDIR ${ELASTALERT_HOME}
+WORKDIR /opt/elastalert
 
 
 
-RUN apk add --update --no-cache curl tzdata python2 make libmagic && \
+RUN apk --update upgrade && \
+    apk add curl tar musl-dev linux-headers gcc libffi-dev libffi openssl-dev tzdata && \
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    echo "Asia/Shanghai" > /etc/timezone && \
+    rm -rf /var/cache/apk/* && \
     mkdir -p ${ELASTALERT_PLUGIN_DIRECTORY} && \
     mkdir -p ${ELASTALERT_CONFIG} && \
     mkdir -p ${RULES_DIRECTORY} && \
     curl -Lo elastalert.tar.gz ${ELASTALERT_URL} && \
     tar -zxvf elastalert.tar.gz -C ${ELASTALERT_HOME} --strip-components 1 && \
-    rm -rf elastalert.tar.gz
-
-
-RUN pip install "configparser>=3.6.0" && \
-    python setup.py install
-
+    rm -rf elastalert.tar.gz && \
+    pip install "setuptools>=11.3" && \
+    pip install "elasticsearch>=5.0.0" && \
+    pip install "configparser>=3.6.0" && \
+    python setup.py install && \
+    apk del gcc libffi-dev musl-dev
 
 COPY ./run.sh ./
 COPY ./elastalert_modules/* ${ELASTALERT_PLUGIN_DIRECTORY}/
