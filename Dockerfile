@@ -17,23 +17,18 @@ WORKDIR ${ELASTALERT_HOME}
 
 
 
-RUN apk add --update --no-cache curl tar musl-dev linux-headers gcc libffi-dev libffi openssl-dev libmagic tzdata && \
+RUN apk add --update --no-cache curl tzdata python2 make libmagic && \
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
-    echo "Asia/Shanghai" > /etc/timezone && \
-    rm -rf /var/cache/apk/*
-
-RUN mkdir -p ${ELASTALERT_PLUGIN_DIRECTORY} && \
+    mkdir -p ${ELASTALERT_PLUGIN_DIRECTORY} && \
     mkdir -p ${ELASTALERT_CONFIG} && \
     mkdir -p ${RULES_DIRECTORY} && \
     curl -Lo elastalert.tar.gz ${ELASTALERT_URL} && \
     tar -zxvf elastalert.tar.gz -C ${ELASTALERT_HOME} --strip-components 1 && \
     rm -rf elastalert.tar.gz
 
-RUN pip install "setuptools>=11.3" && \
-    pip install "configparser>=3.6.0" && \
-    pip install "elasticsearch>=5.0.0" && \
-    python setup.py install && \
-    apk del gcc libffi-dev musl-dev
+
+RUN pip install "configparser>=3.6.0" && \
+    python setup.py install
 
 
 COPY ./run.sh ./
