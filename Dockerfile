@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM python:2.7.15-alpine3.9
 
 #Elastalert的release版本号
 ENV ELASTALERT_VERSION v0.1.38
@@ -12,25 +12,18 @@ ENV ELASTALERT_PLUGIN_DIRECTORY /opt/elastalert/elastalert_modules
 #Elasticsearch 工作目录
 WORKDIR ${ELASTALERT_HOME}
 
-RUN apt-get update && apt-get upgrade -y && \
-    apt-get -y install curl build-essential python-setuptools python2.7 python2.7-dev libssl-dev git tox python-pip && \
+RUN apk add --update --no-cache curl gcc tar tzdata python2 make libmagic libffi-dev libffi openssl-dev musl-dev linux-headers && \
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
-    echo "Asia/Shanghai" > /etc/timezone && \
-    rm -rf /var/cache/apk/* && \
     mkdir -p ${ELASTALERT_PLUGIN_DIRECTORY} && \
     mkdir -p ${ELASTALERT_CONFIG} && \
     mkdir -p ${RULES_DIRECTORY} && \
     curl -Lo elastalert.tar.gz ${ELASTALERT_URL} && \
     tar -zxvf elastalert.tar.gz -C ${ELASTALERT_HOME} --strip-components 1 && \
-    rm -rf elastalert.tar.gz && \
-    pip install "setuptools>=11.3" && \
-    pip install "elasticsearch>=5.0.0" && \
-    apt-get clean
-    
-RUN pip install -r requirements-dev.txt && \
-    python setup.py install
+    rm -rf elastalert.tar.gz
+	
+RUN python setup.py install
 
-ADD ./run.sh ./            
+COPY ./run.sh ./            
       
 COPY ./elastalert_modules/* ${ELASTALERT_PLUGIN_DIRECTORY}/
 
