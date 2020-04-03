@@ -41,4 +41,4 @@ COPY ./elastalert_modules/* ${ELASTALERT_PLUGIN_DIRECTORY}/
 
 
 # Launch Elastalert when a container is started.
-CMD ["/bin/bash","run.sh"]
+CMD ["/bin/sh","run.sh"]
