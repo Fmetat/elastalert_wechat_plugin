@@ -18,7 +18,7 @@ WORKDIR /opt/elastalert
 
 
 RUN apk --update upgrade && \
-    apk add curl tar musl-dev linux-headers gcc libffi-dev libffi openssl-dev tzdata && \
+    apk add curl tar musl-dev linux-headers gcc libffi-dev libffi libmagic openssl-dev tzdata && \
     ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo "Asia/Shanghai" > /etc/timezone && \
     rm -rf /var/cache/apk/* && \
