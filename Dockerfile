@@ -1,4 +1,4 @@
-FROM python:2.7.15-alpine3.9
+FROM python:3.6.10-alpine
 LABEL description="ElastAlert suitable for Docker Kubernetes"
 
 MAINTAINER hello_linux@aliyun.com
